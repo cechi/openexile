@@ -1,7 +1,7 @@
 // https://creazilla.com/nodes/1403679-rpg-characters-3d-model
 // https://free-game-assets.itch.io/free-medieval-3d-people-low-poly-pack
 
-import { Scene, AssetsManager, ContainerAssetTask, AssetContainer, AnimationGroup } from "@babylonjs/core";
+import { Scene, AssetsManager, ContainerAssetTask, AssetContainer, AnimationGroup, MeshAssetTask, MeshBuilder, Mesh } from "@babylonjs/core";
 import { AssetMap } from "./types";
 
 const MODEL_PATH = '/assets/models/';
@@ -14,16 +14,19 @@ export async function loadAssets(scene: Scene) {
 	const manager = new AssetsManager(scene);
 
 	for (let [key, value] of characterAssets) {
-		manager.addContainerTask(key, "", MODEL_PATH, value);
+		manager.addMeshTask(key, "", MODEL_PATH, value);
 	}
 
 	const assets: AssetMap = new Map();
 	
-	manager.onTaskSuccess = function (task: ContainerAssetTask) {
+	manager.onTaskSuccess = function (task: MeshAssetTask) {
 		const animationGroups = new Map<string, AnimationGroup>();
-		const c = task.loadedContainer;
+		const body = task.loadedMeshes[0] as Mesh;
+		body.getChildMeshes().forEach(m => m.isPickable = false);
+		task.loadedMeshes.forEach(m => m.isVisible = false);
+		
 		task.loadedAnimationGroups.forEach(g => animationGroups.set(g.name, g));
-		assets.set(task.name, {container: c, animationGroups: animationGroups});
+		assets.set(task.name, {mesh: body, animationGroups: animationGroups});
 
 		// if (task.name == "Avatar01") {
 		// 	// const m = task.loadedMeshes[0] as Mesh;

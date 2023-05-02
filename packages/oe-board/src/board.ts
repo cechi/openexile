@@ -1,11 +1,12 @@
 import { 
 	Scene, Engine, Camera, ArcRotateCamera, Vector3, HemisphericLight, MeshBuilder, 
 	Mesh, Light, StandardMaterial, Color3, Color4, DynamicTexture, ArcFollowCamera,
-	UniversalCamera, SceneLoader, AssetsManager, PointerInput
+	UniversalCamera, SceneLoader, AssetsManager, PointerInput, Ray, PickingInfo
 } from "@babylonjs/core";
 import { AssetMap } from "./types";
 import { loadAssets } from "./assets";
 import { Player } from "./character";
+import { Pointer } from "./poiner";
 
 export class Board {
 
@@ -17,7 +18,8 @@ export class Board {
 	private assetManager: AssetsManager;
 	private assets: AssetMap;
 	private player: Player;
-	private pointer: Mesh;
+	private pointer: Pointer;
+	private inputIndex: PointerInput;
 
 	private createCamera(target: Mesh) {
 		// const camera = new ArcRotateCamera('camera1', -Math.PI / 2, Math.PI / 2, 500, new Vector3(100, 0, 0), this.scene);
@@ -82,6 +84,17 @@ export class Board {
 		this.load();
 	}
 
+	setTargetToPointer() {
+		const pickResult = this.scene.pick(this.scene.pointerX, this.scene.pointerY, m => m == this.ground);
+		if (pickResult.hit) {
+			this.pointer.position = new Vector3(pickResult.pickedPoint.x, this.pointer.position.y, pickResult.pickedPoint.z);
+			var diffX = pickResult.pickedPoint.x - this.player.mesh.position.x;
+			var diffY = pickResult.pickedPoint.z - this.player.mesh.position.z;
+			this.player.mesh.rotation.y = Math.atan2(diffX, diffY);
+			this.player.goto(this.pointer.position.x, this.pointer.position.z);
+		}
+	}
+
 	async load() {
 		this.assets = await loadAssets(this.scene);
 		console.log(this.assets);
@@ -89,52 +102,33 @@ export class Board {
 		this.engine.runRenderLoop(() =>	this.scene.render());
 		this.showWorldAxis(300, 100);
 
-		this.player = new Player("player1", this.assets.get("Avatar01"));
+		this.player = new Player("player1", this.assets.get("Avatar01"), this.scene);
 		this.player.startIdleAnimation();
 
 		this.camera = this.createCamera(this.player.mesh);
-		
-
-		this.createPointer();
+		this.pointer = new Pointer(this.scene);
 
 		this.scene.onPointerDown = (e, pickInfo, type) => {
+			this.inputIndex = e.inputIndex;
 			if (e.inputIndex == PointerInput.LeftClick) {
-				const pick = this.scene.pickWithRay(pickInfo.ray, m => m == this.ground);
-				if (pick.pickedPoint) {
-					this.pointer.position = new Vector3(pick.pickedPoint.x, this.pointer.position.y, pick.pickedPoint.z);
-					console.log(pick);
-				}
+				this.setTargetToPointer();
 			}
-			
-			// console.log(this.scene.pick(pickInfo.pickedPoint.x, pickInfo.pickedPoint.y));
-			// const forward = new Vector3(0, 0, 1);
-			// forward = vecToLocal(forward, box);
-
-			// var direction = forward.subtract(origin);
-			// direction = BABYLON.Vector3.Normalize(direction);
-
-
-			// console.log(pickInfo.pickedMesh);
-			// console.log(pickInfo.pickedPoint);
-			// this.player.startRunningAnimation();
-
-			// this.scene.pickWithRay(ray, predicate);
 		};
-		// console.log(this.scene.getMaterialByName("avatar/avatar-01.glb"));
+
+		this.scene.onPointerUp = (e, pickInfo, type) => {
+			this.inputIndex = null;
+		}
+
+		this.scene.registerBeforeRender(() => {
+			if (this.inputIndex == PointerInput.LeftClick) {
+				this.setTargetToPointer();
+			}
+			this.player.updatePosition();
+		});
 	}
 
 	resize() {
 		this.engine.resize();
-	}
-
-	private createPointer() {
-		this.pointer = MeshBuilder.CreateSphere('pointer', {segments: 10, diameter: 30}, this.scene);
-		const mat = new StandardMaterial("pointerMat", this.scene);
-		mat.diffuseColor = new Color3(1, 0, 0);
-		this.pointer.material = mat;
-		this.pointer.position.x = 100;
-		this.pointer.position.z = 100;
-		this.pointer.position.y = 0;
 	}
 
 	// public static CreateScene(engine: Engine, canvas: HTMLCanvasElement): Scene {

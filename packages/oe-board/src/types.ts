@@ -1,4 +1,4 @@
-import { AnimationGroup, AssetContainer } from "@babylonjs/core";
+import { AnimationGroup, Mesh } from "@babylonjs/core";
 
-export type AssetProps = {container: AssetContainer, animationGroups: Map<string, AnimationGroup>};
+export type AssetProps = {mesh: Mesh, animationGroups: Map<string, AnimationGroup>};
 export type AssetMap = Map<string, AssetProps>;
