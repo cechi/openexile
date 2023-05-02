@@ -1,0 +1,22 @@
+{
+	// Use IntelliSense to learn about possible attributes.
+	// Hover to view descriptions of existing attributes.
+	// For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+	"version": "0.2.0",
+	"configurations": [{
+		"name": "Debug Jest Tests",
+		"type": "node",
+		"request": "launch",
+		//"args": ["-r", "${workspaceFolder}/.pnp.cjs"],
+		"cwd": "${fileWorkspaceFolder}",
+		"runtimeArgs": [
+			"-r", "${workspaceFolder}/.pnp.cjs",
+			"--inspect-brk",
+			"${workspaceRoot}/.yarn/unplugged/jest-virtual-1f7fb0ee78/node_modules/jest/bin/jest.js",
+			"--runInBand"
+		],
+		"console": "integratedTerminal",
+		"internalConsoleOptions": "neverOpen",
+		"port": 9229
+	}]
+}

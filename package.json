@@ -1,0 +1,37 @@
+{
+	"name": "openexile",
+	"version": "0.0.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/cechi/openexile"
+	},
+	"scripts": {
+		"dev": "yarn workspace @openexile/demo run serve",
+		"build": "yarn workspaces foreach -pvit run build",
+		"build:dev": "yarn workspaces foreach -pvit run build:dev",
+		"clean": "rimraf **/dist & rimraf **/*.tsbuildinfo",
+		"_test": "yarn workspaces foreach run test",
+		"_lint": "yarn workspaces foreach run lint",
+		"_build": "yarn workspaces foreach -pvit run build",
+		"_publish": "yarn workspaces foreach --exclude omegagrid npm publish"
+	},
+	"license": "UNKNOWN",
+	"workspaces": [
+		"packages/*"
+	],
+	"dependenciesMeta": {
+		"jest@29.5.0": {
+			"unplugged": true
+		}
+	},
+	"devDependencies": {
+		"@types/jest": "^29.4.0",
+		"@types/node": "^18.11.18",
+		"cross-env": "^7.0.3",
+		"jest": "^29.5.0",
+		"jest-environment-jsdom": "^29.5.0",
+		"rimraf": "^4.4.1",
+		"ts-jest": "^29.0.5",
+		"typescript": "4.9.3"
+	}
+}

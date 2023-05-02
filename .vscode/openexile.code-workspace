@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{"path": "..", "name": "openexile"},
+		{"path": "../packages/oe-assets"},
+		{"path": "../packages/oe-board"},
+		{"path": "../packages/oe-demo"},
+		{"path": "../packages/oe-graph"}
+	],
+	"settings": {
+		"typescript.tsdk": "openexile\\.yarn\\sdks\\typescript\\lib",
+		"typescript.enablePromptUseWorkspaceTsdk": true,
+		"files.eol": "\n",
+		"npm.packageManager": "yarn",
+		"eslint.packageManager": "yarn",
+		"terminal.integrated.cwd": "${workspaceFolder:openexile}"
+	}
+}

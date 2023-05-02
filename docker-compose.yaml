@@ -1,0 +1,36 @@
+version: "3.9"
+services:
+  rp-excel-addin:
+    build: .
+    command:
+      - /bin/sh
+      - -c
+      - |
+        cd reporting-excel
+        yarn config set 'npmRegistries["//pkgs.dev.azure.com/reporting-cz/_packaging/reporting-feed/npm/registry"]' --json '{"npmAlwaysAuth": true, "npmAuthIdent": "$RP_NPM_AUTH_IDENT"}' --home
+        yarn install
+        yarn build:dev
+        yarn workspace @reporting/rp-excel-addin run start:web --document https://reportingczech.sharepoint.com/:x:/g/EVJw6xmfSORBkf_F-67dPsQBikDan0qukW2qsM0_BtHNAA?e=1s0zym
+        yarn workspace @reporting/rp-excel-addin run watch
+    ports:
+      - "3000:3000"
+      
+    volumes:
+      - ./:/reporting-excel
+
+  rp-excel-devserver:
+    build: .
+    command:
+      - /bin/sh
+      - -c
+      - |
+        cd reporting-excel
+        yarn config set 'npmRegistries["//pkgs.dev.azure.com/reporting-cz/_packaging/reporting-feed/npm/registry"]' --json '{"npmAlwaysAuth": true, "npmAuthIdent": "$RP_NPM_AUTH_IDENT"}' --home
+        yarn install
+        yarn build:dev
+        yarn workspace @reporting/rp-excel-addin run dev-server
+    ports:
+      - "3000:3000"
+      
+    volumes:
+      - ./:/reporting-excel

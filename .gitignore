@@ -1,0 +1,11 @@
+node_modules/
+*.tsbuildinfo
+packages/**/build
+packages/**/dist
+.VSCodeCounter/
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

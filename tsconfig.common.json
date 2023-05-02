@@ -1,0 +1,26 @@
+{	
+	"compilerOptions": {
+		"sourceMap": true,
+		"declaration": true,
+		"declarationMap": true,
+		"noImplicitAny": true,
+		"module": "CommonJS",
+		"target": "ES2018",
+		"allowJs": false,
+		"moduleResolution": "node",
+		"esModuleInterop": true,
+		"experimentalDecorators": true,
+		"allowSyntheticDefaultImports": true,
+		"baseUrl": ".",
+		"paths": {
+			"@openexile/oe-demo": ["packages/oe-demo"],
+			"@openexile/oe-board": ["packages/oe-board"],
+		}
+	},
+	"exclude": [
+		"**/jest.config.ts",
+		"**/dist/**",
+		"**/*.spec.ts",
+		"**/*.test.ts"
+	]
+}
