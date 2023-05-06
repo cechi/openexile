@@ -1,12 +1,14 @@
 import { 
-	Scene, Engine, Camera, ArcRotateCamera, Vector3, HemisphericLight, MeshBuilder, 
+	Scene, Engine, Camera, Vector3, HemisphericLight, MeshBuilder, 
 	Mesh, Light, StandardMaterial, Color3, Color4, DynamicTexture, ArcFollowCamera,
-	UniversalCamera, SceneLoader, AssetsManager, PointerInput, Ray, PickingInfo
+	AssetsManager, PointerInput
 } from "@babylonjs/core";
+import { GridMaterial } from '@babylonjs/materials';
 import { AssetMap } from "./types";
 import { loadAssets } from "./assets";
 import { Player } from "./character";
 import { Pointer } from "./poiner";
+import { FireballProjectile } from "./weapons/projectiles/fireball";
 
 export class Board {
 
@@ -36,7 +38,7 @@ export class Board {
 		
 		// const camera = new UniversalCamera("cam1", new Vector3(0, 0, 0), this.scene);
 
-		this.camera = new ArcFollowCamera("FollowCam", Math.PI / 4, Math.PI / 4, 1000, target, this.scene);
+		this.camera = new ArcFollowCamera("FollowCam", Math.PI / 4, Math.PI / 4, 750, target, this.scene);
 		// this.camera.radius = 30;
 		// this.camera.heightOffset = 10;
 		// this.camera.rotationOffset = 0;
@@ -56,13 +58,28 @@ export class Board {
 	}
 
 	private createGround() {
-		const ground = MeshBuilder.CreateGround("ground", {width: 1000, height: 1000}, this.scene);
+		const ground = MeshBuilder.CreateTiledGround("ground", {
+			xmin: -500, 
+			xmax: 500, 
+			zmin: -500, 
+			zmax: 500, 
+			subdivisions: {
+				w: 5,
+				h: 5,
+			}
+		}, this.scene);
+		const mat = new GridMaterial("groundMaterial", this.scene);
+		mat.gridRatio = 5;
+		mat.mainColor = new Color3(0.7, 0.7, 0.7);
+		mat.lineColor = new Color3(0.9, 0.9, 0.9);
+		mat.minorUnitVisibility = 0;
+		ground.material = mat;
 		ground.position.x = 0;
         ground.position.y = 0;
         ground.position.z = 0;
-		const mat = new StandardMaterial('mat1');
-		mat.emissiveColor = Color3.Green();
-		ground.material = mat;
+		// const mat = new StandardMaterial('mat1');
+		// mat.emissiveColor = Color3.Green();
+		// ground.material = mat;
 		return ground;
 
 		// const ground  = MeshBuilder.CreatePlane("ground", {size: 350}, this.scene);
@@ -97,13 +114,15 @@ export class Board {
 
 	async load() {
 		this.assets = await loadAssets(this.scene);
-		console.log(this.assets);
 
 		this.engine.runRenderLoop(() =>	this.scene.render());
 		this.showWorldAxis(300, 100);
 
 		this.player = new Player("player1", this.assets.get("Avatar01"), this.scene);
 		this.player.startIdleAnimation();
+		
+		const testProjectile = new FireballProjectile(this.scene);
+		testProjectile.position = new Vector3(0, 200, 0);
 
 		this.camera = this.createCamera(this.player.mesh);
 		this.pointer = new Pointer(this.scene);

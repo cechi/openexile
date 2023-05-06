@@ -24,6 +24,10 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
         "reference": "workspace:packages/oe-board"\
       },\
       {\
+        "name": "@openexile/core",\
+        "reference": "workspace:packages/oe-core"\
+      },\
+      {\
         "name": "@openexile/demo",\
         "reference": "workspace:packages/oe-demo"\
       },\
@@ -37,6 +41,7 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
     "fallbackExclusionList": [\
       ["@openexile/assets", ["workspace:packages/oe-assets"]],\
       ["@openexile/board", ["workspace:packages/oe-board"]],\
+      ["@openexile/core", ["workspace:packages/oe-core"]],\
       ["@openexile/demo", ["workspace:packages/oe-demo"]],\
       ["@openexile/graph", ["workspace:packages/oe-graph"]],\
       ["openexile", ["workspace:."]]\
@@ -1808,6 +1813,25 @@ function $$SETUP_STATE(hydrateRuntimeState, basePath) {
             ["@types/jest", "npm:29.5.1"],\
             ["@types/node", "npm:18.16.3"],\
             ["@types/qs", "npm:6.9.7"],\
+            ["@typescript-eslint/eslint-plugin", "virtual:418e3f943a5cb9d9fb555622827f13c96a8800021ef6db6e415d602951d02d8d7aa035e00d05a487456cda3c0fa467773e96873d265b06f202b0a9fb62d4272a#npm:5.59.1"],\
+            ["@typescript-eslint/parser", "virtual:418e3f943a5cb9d9fb555622827f13c96a8800021ef6db6e415d602951d02d8d7aa035e00d05a487456cda3c0fa467773e96873d265b06f202b0a9fb62d4272a#npm:5.59.1"],\
+            ["cross-env", "npm:7.0.3"],\
+            ["eslint", "npm:8.39.0"],\
+            ["jest", "virtual:7222afb8ed0c026a59f1b7ee020c79fc063f5accf660a105d5dc73502101c3dcbc66ce5ea6eb645ef50898d47b94805839651f52284080cb1b4b339ec6d804f0#npm:29.5.0"],\
+            ["jest-environment-jsdom", "virtual:7222afb8ed0c026a59f1b7ee020c79fc063f5accf660a105d5dc73502101c3dcbc66ce5ea6eb645ef50898d47b94805839651f52284080cb1b4b339ec6d804f0#npm:29.5.0"],\
+            ["ts-jest", "virtual:7222afb8ed0c026a59f1b7ee020c79fc063f5accf660a105d5dc73502101c3dcbc66ce5ea6eb645ef50898d47b94805839651f52284080cb1b4b339ec6d804f0#npm:29.1.0"],\
+            ["typescript", "patch:typescript@npm%3A4.9.3#~builtin<compat/typescript>::version=4.9.3&hash=d73830"]\
+          ],\
+          "linkType": "SOFT"\
+        }]\
+      ]],\
+      ["@openexile/core", [\
+        ["workspace:packages/oe-core", {\
+          "packageLocation": "./packages/oe-core/",\
+          "packageDependencies": [\
+            ["@openexile/core", "workspace:packages/oe-core"],\
+            ["@types/jest", "npm:29.5.1"],\
+            ["@types/node", "npm:18.16.3"],\
             ["@typescript-eslint/eslint-plugin", "virtual:418e3f943a5cb9d9fb555622827f13c96a8800021ef6db6e415d602951d02d8d7aa035e00d05a487456cda3c0fa467773e96873d265b06f202b0a9fb62d4272a#npm:5.59.1"],\
             ["@typescript-eslint/parser", "virtual:418e3f943a5cb9d9fb555622827f13c96a8800021ef6db6e415d602951d02d8d7aa035e00d05a487456cda3c0fa467773e96873d265b06f202b0a9fb62d4272a#npm:5.59.1"],\
             ["cross-env", "npm:7.0.3"],\

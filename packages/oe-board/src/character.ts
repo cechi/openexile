@@ -1,4 +1,4 @@
-import { Mesh, Scene, TransformNode, AnimationGroup, Vector3, MeshBuilder, Matrix, Quaternion } from "@babylonjs/core";
+import { Mesh, Scene, TransformNode, AnimationGroup, Vector3, MeshBuilder, Matrix } from "@babylonjs/core";
 import { AssetProps } from "./types";
 
 export type CharacterAnimation = 'running'|'idle';
