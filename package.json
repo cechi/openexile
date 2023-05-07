@@ -10,7 +10,7 @@
 		"build": "yarn workspaces foreach -pvit run build",
 		"build:dev": "yarn workspaces foreach -pvit run build:dev",
 		"clean": "rimraf **/dist & rimraf **/*.tsbuildinfo",
-		"docs": "cpy ./packages/oe-demo/dist/*.js ./docs/js/ --flat",
+		"docs": "cpy . ../../docs/assets --cwd=packages/oe-assets",
 		"_test": "yarn workspaces foreach run test",
 		"_lint": "yarn workspaces foreach run lint",
 		"_build": "yarn workspaces foreach -pvit run build",
@@ -34,6 +34,6 @@
 		"jest-environment-jsdom": "^29.5.0",
 		"rimraf": "^4.4.1",
 		"ts-jest": "^29.0.5",
-		"typescript": "4.9.3"
+		"typescript": "4.9.4"
 	}
 }
