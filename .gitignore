@@ -9,3 +9,4 @@ packages/**/dist
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+!packages/oe-demo/dist/*.js

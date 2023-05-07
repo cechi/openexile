@@ -1,5 +1,4 @@
 import { library } from '@fortawesome/fontawesome-svg-core';
-// import { fas } from '@fortawesome/free-solid-svg-icons';
 import initDemo from './demo';
 export * from './components';
 
@@ -22,12 +21,13 @@ const OpenExile = {
     Bucket: Bucket,
     getStyleManager,
     initDemo,
+    icons: library,
 };
 
 declare global {
     interface Window { 
-        Omega: typeof OpenExile,
+        OpenExile: typeof OpenExile,
     }
 }
 
-window.Omega = OpenExile;
+window.OpenExile = OpenExile;
