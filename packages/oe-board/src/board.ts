@@ -4,16 +4,17 @@ import {
 	AssetsManager, PointerInput
 } from "@babylonjs/core";
 import { GridMaterial } from '@babylonjs/materials';
-import { AssetMap } from "./types";
+import { AssetMap, Options } from "./types";
 import { loadAssets } from "./assets";
 import { Player } from "./character";
 import { Pointer } from "./poiner";
-import { FireballProjectile } from "./weapons/projectiles/fireball";
 
 export class Board {
 
+	private _scene: Scene;
+	get scene() { return this._scene }
+
 	private engine: Engine;
-	private scene: Scene;
 	private camera: Camera;
 	private ground: Mesh;
 	private light: Light;
@@ -92,9 +93,9 @@ export class Board {
 		// return ground;
 	}
 
-	constructor(private canvas: HTMLCanvasElement) {
+	constructor(private canvas: HTMLCanvasElement, public readonly options: Options) {
 		this.engine = new Engine(this.canvas, true);
-		this.scene = new Scene(this.engine);
+		this._scene = new Scene(this.engine);
 		//this.scene.debugLayer.show({embedMode: true});
 		this.scene.clearColor = new Color4(0, 0, 0);
 		this.light = this.createLight();
@@ -117,12 +118,12 @@ export class Board {
 	}
 
 	async load() {
-		this.assets = await loadAssets(this.scene);
+		this.assets = await loadAssets(this.scene, this.options);
 
 		this.engine.runRenderLoop(() =>	this.scene.render());
 		// this.showWorldAxis(300, 100);
 
-		this.player = new Player("player1", this.assets.get("sorceress"), this.scene);
+		this.player = new Player(this, this.assets.get("sorceress"));
 		this.player.startAnimation("idle");
 		
 		this.camera = this.createCamera(this.player.mesh);

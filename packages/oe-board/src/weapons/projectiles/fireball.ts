@@ -1,13 +1,14 @@
 import { Color4, NoiseProceduralTexture, ParticleSystem, Scene, Texture, Vector3 } from "@babylonjs/core";
+import { Board } from "../../board";
 import { BaseProjectile, ParticleProjectile } from "./baseProjectile";
 
 export class FireballProjectile extends ParticleProjectile {
 
-	constructor(scene: Scene) {
-		super(scene, 200);
+	constructor(board: Board) {
+		super(board, 200);
 		
 		// this._particleSystem.particleTexture = this.getTexture('/assets/textures/flare_red.png');
-		this._particleSystem.particleTexture = new Texture('/assets/textures/flare_purple.png', scene);
+		this._particleSystem.particleTexture = new Texture(`${board.options.assetPath}textures/flare_purple.png`, board.scene);
 		this._particleSystem.emitter = this._mesh;
 		this._particleSystem.minEmitBox = new Vector3(0, 0, 0);
 		this._particleSystem.maxEmitBox = new Vector3(0, 0, 0);
@@ -35,7 +36,7 @@ export class FireballProjectile extends ParticleProjectile {
 		this._particleSystem.maxEmitPower = 0;
 		this._particleSystem.updateSpeed = 0.005;
 	
-		const noiseTexture = new NoiseProceduralTexture("perlin", 256, scene);
+		const noiseTexture = new NoiseProceduralTexture("perlin", 256, board.scene);
 		noiseTexture.animationSpeedFactor = 5;
 		noiseTexture.persistence = 1;
 		noiseTexture.brightness = 0.5;

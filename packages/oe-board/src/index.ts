@@ -3,3 +3,4 @@ import '@babylonjs/loaders';
 // import "@babylonjs/inspector";
 
 export * from './board';
+export * from './types';

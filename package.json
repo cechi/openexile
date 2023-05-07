@@ -10,7 +10,7 @@
 		"build": "yarn workspaces foreach -pvit run build",
 		"build:dev": "yarn workspaces foreach -pvit run build:dev",
 		"clean": "rimraf **/dist & rimraf **/*.tsbuildinfo",
-		"docs": "cpy . ../../docs/assets --cwd=packages/oe-assets",
+		"docs": "yarn workspace @openexile/demo build && cpy ./packages/oe-demo/dist/*.js ./docs --flat",
 		"_test": "yarn workspaces foreach run test",
 		"_lint": "yarn workspaces foreach run lint",
 		"_build": "yarn workspaces foreach -pvit run build",

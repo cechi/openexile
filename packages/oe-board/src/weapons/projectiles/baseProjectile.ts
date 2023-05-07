@@ -1,4 +1,5 @@
 import { Mesh, MeshBuilder, ParticleSystem, Scene, Texture, TransformNode, Vector3 } from "@babylonjs/core";
+import { Board } from "../../board";
 
 export class BaseProjectile extends TransformNode {
 
@@ -13,11 +14,11 @@ export class BaseProjectile extends TransformNode {
 	
 	public index: number;
 
-	constructor(scene: Scene) {
-		super('projectile', scene);
+	constructor(public readonly board: Board) {
+		super('projectile', board.scene);
 		this.index = ++BaseProjectile.i;
 
-		const coreSphere = MeshBuilder.CreateSphere(null, {diameter: 20, segments: 16}, scene);
+		const coreSphere = MeshBuilder.CreateSphere(null, {diameter: 20, segments: 16}, board.scene);
 		this._mesh = coreSphere;
 		this._mesh.parent = this;
 		this._mesh.isVisible = false;
@@ -33,9 +34,9 @@ export class ParticleProjectile extends BaseProjectile {
 
 	protected _particleSystem: ParticleSystem;
 
-	constructor(public readonly scene: Scene, capacity = 200) {
-		super(scene);
-		this._particleSystem = new ParticleSystem(null, capacity, scene);
+	constructor(public readonly board: Board, capacity = 200) {
+		super(board);
+		this._particleSystem = new ParticleSystem(null, capacity, board.scene);
 		this._particleSystem.minSize = 10;
 		this._particleSystem.maxSize = 30;
 	}

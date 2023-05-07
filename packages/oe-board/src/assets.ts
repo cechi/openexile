@@ -2,20 +2,18 @@
 // https://free-game-assets.itch.io/free-medieval-3d-people-low-poly-pack
 
 import { Scene, AssetsManager, ContainerAssetTask, AssetContainer, AnimationGroup, MeshAssetTask, MeshBuilder, Mesh } from "@babylonjs/core";
-import { AssetMap } from "./types";
-
-const MODEL_PATH = '/assets/models/';
+import { AssetMap, Options } from "./types";
 
 export const characterAssets = new Map<string, string>([
-	['sorceress', 'characters/sorceress.glb'],
-	['ybot', 'characters/ybot2.glb']
+	['sorceress', 'models/characters/sorceress.glb'],
+	['ybot', 'models/characters/ybot2.glb']
 ]);
 
-export async function loadAssets(scene: Scene) {
+export async function loadAssets(scene: Scene, options: Options) {
 	const manager = new AssetsManager(scene);
 
 	for (let [key, value] of characterAssets) {
-		manager.addMeshTask(key, "", MODEL_PATH, value);
+		manager.addMeshTask(key, "", options.assetPath, value);
 	}
 
 	const assets: AssetMap = new Map();

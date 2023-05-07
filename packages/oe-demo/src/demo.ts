@@ -4,9 +4,13 @@ import { html, render } from 'lit';
 import { styleMap } from "lit/directives/style-map.js";
 import { DemoBoard } from "./components";
 import { TabEvent, TabSplitContainerItem } from "@omegagrid/tabs";
-import { Board } from "@openexile/board";
+import { Board, Options as BoardOptions } from "@openexile/board";
 
 let componentList: List;
+
+export type Options = {
+	boardOptions: BoardOptions
+}
 
 const setAccent = (color: string) => {
 	const s = getStyleManager();
@@ -86,11 +90,11 @@ const createComponentDemoThemeSelect = (bucket: Bucket) => {
 	return elm;
 }
 
-const createComponentFactory = (bucket: Bucket) => (id: string) => new Promise<HTMLElement>((resolve) => {
+const createComponentFactory = (bucket: Bucket, options: Options) => (id: string) => new Promise<HTMLElement>((resolve) => {
 	let elm: HTMLElement;
 	const c = components.find(c => c.id == id);
 	if (c && c.factory) {
-		elm = c.factory(bucket);
+		elm = c.factory(bucket, options);
 	} else {
 		elm = dom.createElement('div');
 		elm.innerHTML = 'unknown';
@@ -98,14 +102,15 @@ const createComponentFactory = (bucket: Bucket) => (id: string) => new Promise<H
 	resolve(elm);
 });
 
-const createComponentDemoBucket = (bucket: Bucket) => {
+const createComponentDemoBucket = (bucket: Bucket, options: Options) => {
 	const bucket1 = dom.createElement<Bucket>('og-bucket');
-	bucket1.createComponent = (id: string) => createComponentFactory(bucket1)(id);
+	bucket1.createComponent = (id: string) => createComponentFactory(bucket1, options)(id);
 
 	let items: TabSplitContainerItem[] = [];
-	if (window.location.hash) {
-		items.push({container: {size: null}, tabs: [{id: window.location.hash.substring(1), title: window.location.hash.substring(1)}]});
-	}
+	items.push({container: {size: null}, tabs: [{id: 'board', title: 'Board'}]});
+	// if (window.location.hash) {
+	// 	items.push({container: {size: null}, tabs: [{id: window.location.hash.substring(1), title: window.location.hash.substring(1)}]});
+	// }
 
 	bucket1.loadSettings({
 		sidemenu: {
@@ -114,17 +119,13 @@ const createComponentDemoBucket = (bucket: Bucket) => {
 				id: 'componentList',
 				icon: 'puzzle-piece',
 				text: 'Components'
-			}, {
-				id: 'about',
-				icon: 'circle-question',
-				text: 'About'
 			}]
 		},
 		editorLayout: {
 			items: items
 		}, 
 		top: {
-			rightItems: [{id: 'themeSelector'}]
+			rightItems: [] //[{id: 'themeSelector'}]
 		}
 	});
 
@@ -153,14 +154,18 @@ const createComponentList = (bucket: Bucket) => {
 	return list;
 };
 
-const components: {id: string, name: string, factory: (bucket: Bucket) => HTMLElement, sidebar?: boolean}[] = [
+const components: {id: string, name: string, factory: (bucket: Bucket, options: Options) => HTMLElement, sidebar?: boolean}[] = [
 	{id: 'logo', name: 'Logo', factory: createComponentDemoLogo, sidebar: false},
 	{id: 'componentList', name: 'ComponentList', factory: createComponentList, sidebar: false},
 	{id: 'themeSelector', name: 'ThemeSelector', factory: createComponentDemoThemeSelect, sidebar: false},
-	{id: 'board', name: 'Board', factory: () => dom.createElement<DemoBoard>('oe-demo-board'), sidebar: true},
+	{id: 'board', name: 'Board', factory: (bucket, options) => {
+		const c = dom.createElement<DemoBoard>('oe-demo-board')
+		c.options = options.boardOptions;
+		return c;
+	}, sidebar: true},
 ];
 
-export default function initDemo(elm: HTMLElement) {
+export default function initDemo(elm: HTMLElement, options: Options) {
 	dom.empty(elm);
 	
 	// const canvas = dom.createElement<HTMLCanvasElement>('canvas', elm);
@@ -168,6 +173,6 @@ export default function initDemo(elm: HTMLElement) {
 	// canvas.style.width = '100%';
 	// const board = new Board(canvas);
 
-	elm.appendChild(createComponentDemoBucket(null));
+	elm.appendChild(createComponentDemoBucket(null, options));
 	getStyleManager().register('dark');
 }

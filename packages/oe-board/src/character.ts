@@ -2,6 +2,7 @@ import { Mesh, Scene, TransformNode, AnimationGroup, Vector3, MeshBuilder, Matri
 import { BaseProjectile } from "./weapons/projectiles/baseProjectile";
 import { FireballProjectile } from "./weapons/projectiles/fireball";
 import { AssetProps } from "./types";
+import { Board } from "./board";
 
 export type CharacterAnimation = 'running'|'idle'|'throw01';
 
@@ -16,7 +17,7 @@ export class Character extends TransformNode {
 	private animationGroups = new Map<CharacterAnimation, AnimationGroup>();
 	
 	private createOuterMesh() {
-		const outer = MeshBuilder.CreateBox("outer", { width: 2, depth: 1, height: 3 }, this.scene);
+		const outer = MeshBuilder.CreateBox("outer", { width: 2, depth: 1, height: 3 }, this.board.scene);
 		outer.isVisible = false;
 		outer.isPickable = false;
 		outer.checkCollisions = true;
@@ -30,8 +31,8 @@ export class Character extends TransformNode {
 		return outer;
 	}
 
-	constructor(name: string, assetProps: AssetProps, private scene: Scene) {
-		super(name, scene);
+	constructor(public readonly board: Board, assetProps: AssetProps) {
+		super(null, board.scene);
 
 		this._mesh = this.createOuterMesh();
 
@@ -96,7 +97,7 @@ export class Character extends TransformNode {
 	private _lastFireTime: number = 0;
 
 	fire() {
-		const projectile = new FireballProjectile(this.scene);
+		const projectile = new FireballProjectile(this.board);
 		const position = this.mesh.position.clone();
 		position.y = 150;
 		projectile.mesh.position = position;

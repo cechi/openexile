@@ -9,5 +9,3 @@ packages/**/dist
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
-docs/assets
-docs/js
