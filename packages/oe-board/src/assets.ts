@@ -7,7 +7,8 @@ import { AssetMap } from "./types";
 const MODEL_PATH = '/assets/models/';
 
 export const characterAssets = new Map<string, string>([
-	['Avatar01', 'characters/avatar01.glb']
+	['sorceress', 'characters/sorceress.glb'],
+	['ybot', 'characters/ybot2.glb']
 ]);
 
 export async function loadAssets(scene: Scene) {

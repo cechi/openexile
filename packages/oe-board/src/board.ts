@@ -21,8 +21,9 @@ export class Board {
 	private assets: AssetMap;
 	private player: Player;
 	private pointer: Pointer;
+	private targetPointer: Pointer;
 	private inputIndex: PointerInput;
-
+	
 	private createCamera(target: Mesh) {
 		// const camera = new ArcRotateCamera('camera1', -Math.PI / 2, Math.PI / 2, 500, new Vector3(100, 0, 0), this.scene);
 		// camera.attachControl(this.engine.inputElement, true, false);
@@ -71,7 +72,7 @@ export class Board {
 		const mat = new GridMaterial("groundMaterial", this.scene);
 		mat.gridRatio = 5;
 		mat.mainColor = new Color3(0.7, 0.7, 0.7);
-		mat.lineColor = new Color3(0.9, 0.9, 0.9);
+		mat.lineColor = new Color3(0.4, 0.4, 0.4);
 		mat.minorUnitVisibility = 0;
 		ground.material = mat;
 		ground.position.x = 0;
@@ -101,14 +102,17 @@ export class Board {
 		this.load();
 	}
 
-	setTargetToPointer() {
+	setTargetToPointer(goto = true) {
 		const pickResult = this.scene.pick(this.scene.pointerX, this.scene.pointerY, m => m == this.ground);
 		if (pickResult.hit) {
 			this.pointer.position = new Vector3(pickResult.pickedPoint.x, this.pointer.position.y, pickResult.pickedPoint.z);
 			var diffX = pickResult.pickedPoint.x - this.player.mesh.position.x;
 			var diffY = pickResult.pickedPoint.z - this.player.mesh.position.z;
 			this.player.mesh.rotation.y = Math.atan2(diffX, diffY);
-			this.player.goto(this.pointer.position.x, this.pointer.position.z);
+
+			this.player.setTarget(this.pointer.position.x, this.pointer.position.z);
+			if (goto) this.player.gotoTarget();
+			else this.player.stopMoving();
 		}
 	}
 
@@ -116,70 +120,46 @@ export class Board {
 		this.assets = await loadAssets(this.scene);
 
 		this.engine.runRenderLoop(() =>	this.scene.render());
-		this.showWorldAxis(300, 100);
+		// this.showWorldAxis(300, 100);
 
-		this.player = new Player("player1", this.assets.get("Avatar01"), this.scene);
-		this.player.startIdleAnimation();
+		this.player = new Player("player1", this.assets.get("sorceress"), this.scene);
+		this.player.startAnimation("idle");
 		
-		const testProjectile = new FireballProjectile(this.scene);
-		testProjectile.position = new Vector3(0, 200, 0);
-
 		this.camera = this.createCamera(this.player.mesh);
 		this.pointer = new Pointer(this.scene);
-
+		
 		this.scene.onPointerDown = (e, pickInfo, type) => {
 			this.inputIndex = e.inputIndex;
 			if (e.inputIndex == PointerInput.LeftClick) {
 				this.setTargetToPointer();
+			} else if (e.inputIndex == PointerInput.RightClick) {
+				this.player.startAttack();
+				this.setTargetToPointer(false);
 			}
 		};
-
+		
 		this.scene.onPointerUp = (e, pickInfo, type) => {
 			this.inputIndex = null;
-		}
+			if (e.inputIndex == PointerInput.RightClick) {
+				this.player.stopAttack();
+			}
+		};
 
 		this.scene.registerBeforeRender(() => {
 			if (this.inputIndex == PointerInput.LeftClick) {
 				this.setTargetToPointer();
+			} else if (this.inputIndex == PointerInput.RightClick) {
+				this.setTargetToPointer(false);
 			}
-			this.player.updatePosition();
+			const deltaTime = this.scene.getEngine().getDeltaTime();
+			this.player.updateAttacks(deltaTime);
+			this.player.updatePosition(deltaTime);
 		});
 	}
 
 	resize() {
 		this.engine.resize();
 	}
-
-	// public static CreateScene(engine: Engine, canvas: HTMLCanvasElement): Scene {
-	// 	// This creates a basic Babylon Scene object (non-mesh)
-	// 	var scene = new Scene(engine);
-
-	// 	// This creates and positions a free camera (non-mesh)
-	// 	var camera = new FreeCamera("camera1", new Vector3(0, 5, -10), scene);
-
-	// 	// This targets the camera to scene origin
-	// 	camera.setTarget(Vector3.Zero());
-
-	// 	// This attaches the camera to the canvas
-	// 	camera.attachControl(canvas, true);
-
-	// 	// This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-	// 	var light = new HemisphericLight("light1", new Vector3(0, 1, 0), scene);
-
-	// 	// Default intensity is 1. Let's dim the light a small amount
-	// 	light.intensity = 0.7;
-
-	// 	// Our built-in 'sphere' shape. Params: name, options, scene
-	// 	var sphere = MeshBuilder.CreateSphere("sphere", {diameter: 2, segments: 32}, scene);
-
-	// 	// Move the sphere upward 1/2 its height
-	// 	sphere.position.y = 1;
-
-	// 	// Our built-in 'ground' shape. Params: name, options, scene
-	// 	var ground = MeshBuilder.CreateGround("ground", {width: 6, height: 6}, scene);
-
-	// 	return scene;
-	// }
 
 	showWorldAxis(size: number, heightAboveGround: number) {
         const makeTextPlane = (text: string, color: string, size: number) => {
